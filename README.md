@@ -10,8 +10,10 @@ The API enables the following functionalities:
 - **Getting data for a single customer**
 - **Adding a customer**
 - **Updating a customer's information**
+- **Batch updating customers' information**
 - **Removing a customer**
 - **API Overview (accessible at the root endpoint)**
+
 
 ## Installation
 
@@ -74,6 +76,32 @@ Here's how you can interact with the API using common HTTP methods:
 
 - **Method:** DELETE
 - **Endpoint:** `/customers/{id}`
+
+### Batch Update Customers
+
+- **Method:** PUT
+- **Endpoint:** `/customers/batchUpdate`
+- **Body:** An array of customer objects to be updated.
+
+```json
+[
+  {
+      "id": "1",
+      "name": "Updated Name",
+      "role": "Updated Role",
+      "email": "Updated Email",
+      "phone": 5550199,
+      "contacted": true
+  },
+  {
+      "id": "2",
+      "name": "Another Updated Name",
+      "role": "Another Updated Role",
+      "email": "AnotherUpdatedEmail@example.com",
+      "phone": 5550299,
+      "contacted": false
+  }
+]
 
 ## Testing
 
