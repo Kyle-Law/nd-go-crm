@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -103,4 +106,49 @@ func TestGetCustomerHandler(t *testing.T) {
 		t.Errorf("getCustomer returned wrong status code: got %v want %v",
 			status, http.StatusNotFound)
 	}
+}
+
+func TestBatchUpdateCustomers(t *testing.T) {
+	// Sample customers for testing
+	sampleCustomers := []Customer{
+		{"1", "Updated Alice", "Updated Engineer", "alice@example.com", 5550199, false},
+		{"2", "Updated Bob", "Updated Manager", "bob@example.com", 5550299, true},
+	}
+
+	// Convert the sample customers to JSON
+	requestBody, err := json.Marshal(sampleCustomers)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a new HTTP request using the JSON body
+	req, err := http.NewRequest("PUT", "/customers/batchUpdate", bytes.NewBuffer(requestBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a ResponseRecorder to record the response
+	rr := httptest.NewRecorder()
+
+	// Call the handler function (you will need to define this in your code)
+	handler := http.HandlerFunc(batchUpdateCustomers)
+	handler.ServeHTTP(rr, req)
+
+	// Check the status code
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+
+	// Check if updates were applied by reading from the in-memory database
+	customers.RLock()
+	for _, expectedCustomer := range sampleCustomers {
+		actualCustomer, exists := customers.m[expectedCustomer.ID]
+		if !exists {
+			t.Errorf("Updated customer with ID %v not found", expectedCustomer.ID)
+		}
+		if !reflect.DeepEqual(expectedCustomer, actualCustomer) {
+			t.Errorf("Handler did not apply update correctly: got %+v want %+v", actualCustomer, expectedCustomer)
+		}
+	}
+	customers.RUnlock()
 }
