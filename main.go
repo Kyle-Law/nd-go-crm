@@ -29,6 +29,7 @@ var customers = struct {
 }
 
 func main() {
+	http.HandleFunc("/", apiOverviewHandler)
 	http.HandleFunc("/customers", customersHandler)
 	http.HandleFunc("/customers/", customerHandler)
 	http.ListenAndServe(":8080", nil)
@@ -140,4 +141,23 @@ func deleteCustomer(w http.ResponseWriter, r *http.Request) {
 
 	delete(customers.m, id)
 	w.WriteHeader(http.StatusOK)
+}
+
+func apiOverviewHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprint(w, `<h1>API Overview</h1>
+	<p>This API provides endpoints to manage customers. Below are the available endpoints:</p>
+	<ul>
+		<li>GET /customers - Retrieve all customers</li>
+		<li>POST /customers - Create a new customer</li>
+		<li>GET /customers/{id} - Retrieve a specific customer</li>
+		<li>PUT /customers/{id} - Update a specific customer</li>
+		<li>DELETE /customers/{id} - Delete a specific customer</li>
+	</ul>
+	<p>Use the above endpoints with appropriate HTTP methods to interact with the API.</p>`)
 }

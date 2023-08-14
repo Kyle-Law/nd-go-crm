@@ -11,6 +11,7 @@ The API enables the following functionalities:
 - **Adding a customer**
 - **Updating a customer's information**
 - **Removing a customer**
+- **API Overview (accessible at the root endpoint)**
 
 ## Installation
 
