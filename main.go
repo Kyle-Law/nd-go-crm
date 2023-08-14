@@ -32,6 +32,7 @@ func main() {
 	http.HandleFunc("/", apiOverviewHandler)
 	http.HandleFunc("/customers", customersHandler)
 	http.HandleFunc("/customers/", customerHandler)
+	http.HandleFunc("/customers/batchUpdate", batchUpdateCustomers)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -160,4 +161,22 @@ func apiOverviewHandler(w http.ResponseWriter, r *http.Request) {
 		<li>DELETE /customers/{id} - Delete a specific customer</li>
 	</ul>
 	<p>Use the above endpoints with appropriate HTTP methods to interact with the API.</p>`)
+}
+
+func batchUpdateCustomers(w http.ResponseWriter, r *http.Request) {
+	var customersToUpdate []Customer
+	if err := json.NewDecoder(r.Body).Decode(&customersToUpdate); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	customers.Lock()
+	defer customers.Unlock()
+	for _, customer := range customersToUpdate {
+		if _, exists := customers.m[customer.ID]; exists {
+			customers.m[customer.ID] = customer
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
