@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"sync"
@@ -29,11 +30,23 @@ var customers = struct {
 }
 
 func main() {
-	http.HandleFunc("/", apiOverviewHandler)
-	http.HandleFunc("/customers", customersHandler)
-	http.HandleFunc("/customers/", customerHandler)
-	http.HandleFunc("/customers/batchUpdate", batchUpdateCustomers)
-	http.ListenAndServe(":8080", nil)
+	http.Handle("/", loggingMiddleware(http.HandlerFunc(apiOverviewHandler)))
+	http.Handle("/customers", loggingMiddleware(http.HandlerFunc(customersHandler)))
+	http.Handle("/customers/", loggingMiddleware(http.HandlerFunc(customerHandler)))
+	http.Handle("/customers/batchUpdate", loggingMiddleware(http.HandlerFunc(batchUpdateCustomers)))
+
+	fmt.Println("Starting server at http://localhost:8080...")
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		log.Fatalf("Error starting server: %v", err)
+	}
+}
+
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Received request: Method: %s, Endpoint: %s, User-Agent: %s, RemoteAddr: %s", r.Method, r.URL.Path, r.UserAgent(), r.RemoteAddr)
+		next.ServeHTTP(w, r)
+	})
 }
 
 func customersHandler(w http.ResponseWriter, r *http.Request) {
