@@ -154,10 +154,11 @@ func apiOverviewHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, `<h1>API Overview</h1>
 	<p>This API provides endpoints to manage customers. Below are the available endpoints:</p>
 	<ul>
-		<li>GET /customers - Retrieve all customers</li>
+		<li><a href="/customers">GET /customers</a> - Retrieve all customers</li>
 		<li>POST /customers - Create a new customer</li>
-		<li>GET /customers/{id} - Retrieve a specific customer</li>
+		<li>GET /customers/{id} - Retrieve a specific customer (replace "{id}" with a specific customer ID)</li>
 		<li>PUT /customers/{id} - Update a specific customer</li>
+		<li>PUT /customers/batchUpdate - Batch update customers' information</li>
 		<li>DELETE /customers/{id} - Delete a specific customer</li>
 	</ul>
 	<p>Use the above endpoints with appropriate HTTP methods to interact with the API.</p>`)
