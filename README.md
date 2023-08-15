@@ -102,6 +102,7 @@ Here's how you can interact with the API using common HTTP methods:
       "contacted": false
   }
 ]
+```
 
 ## Testing
 
