@@ -50,12 +50,21 @@ Here's how you can interact with the API using common HTTP methods:
 
 - **Method:** GET
 - **Endpoint:** `/customers`
+- **Example:**
+
+```bash
+curl http://localhost:8080/customers
+```
 
 ### Get a Single Customer
 
 - **Method:** GET
 - **Endpoint:** `/customers/{id}`
+- **Example:**
 
+```bash
+curl http://localhost:8080/customers/1
+```
 ### Add a Customer
 
 - **Method:** POST
@@ -71,11 +80,30 @@ Here's how you can interact with the API using common HTTP methods:
       "contacted": true
   }
 ```
+- **Example:**
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"name": "Example Name", "role": "Example Role", "email": "Example Email", "phone": 5550199, "contacted": true}' http://localhost:8080/customers
+```
+### Update a Customer
+
+- **Method:** DELETE
+- **Endpoint:** `/customers/{id}`
+- **Example:**
+
+```bash
+curl -X PUT -H "Content-Type: application/json" -d '{"name": "Updated Name", "role": "Updated Role", "email": "Updated Email", "phone": 5550199, "contacted": true}' http://localhost:8080/customers/1
+```
 
 ### Delete a Customer
 
 - **Method:** DELETE
 - **Endpoint:** `/customers/{id}`
+- **Example:**
+
+```bash
+curl -X DELETE http://localhost:8080/customers/1
+```
 
 ### Batch Update Customers
 
@@ -102,6 +130,10 @@ Here's how you can interact with the API using common HTTP methods:
       "contacted": false
   }
 ]
+```
+- **Example:** 
+```bash
+curl -X PUT -H "Content-Type: application/json" -d @batch_update.json http://localhost:8080/customers/batchUpdate
 ```
 
 ## Testing
